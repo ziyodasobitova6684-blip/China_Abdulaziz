@@ -183,34 +183,28 @@ function App() {
   const [products, setProducts] = useState(() =>
     readStorage("china_products", initialProducts),
   );
-
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("default");
-
   const heroImage = categoryBackgrounds[category] || categoryBackgrounds.all;
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-
   const [cart, setCart] = useState(() => readStorage("china_cart", []));
   const [favorites, setFavorites] = useState(() =>
     readStorage("china_favorites", []),
   );
   const [compare, setCompare] = useState([]);
-
   const [showCart, setShowCart] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
-
   const [paymentMethod, setPaymentMethod] = useState("telegram");
   const [location, setLocation] = useState("");
   const [locationLoading, setLocationLoading] = useState(false);
   const [orderMessage, setOrderMessage] = useState("");
-
   const [customer, setCustomer] = useState({
     name: "",
     phone: "",
@@ -234,9 +228,7 @@ function App() {
       const productCategory = getCategoryId(product.category);
       const matchesCategory =
         category === "all" || productCategory === category;
-
       const query = search.trim().toLowerCase();
-
       const categoryLabel =
         categories
           .find((item) => item.id === productCategory)
@@ -244,27 +236,37 @@ function App() {
 
       const matchesSearch =
         !query ||
-        product.name.toLowerCase().includes(query) ||
-        (product.description || "").toLowerCase().includes(query) ||
+        String(product.name || "")
+          .toLowerCase()
+          .includes(query) ||
+        String(product.description || "")
+          .toLowerCase()
+          .includes(query) ||
         categoryLabel.includes(query);
 
       return matchesCategory && matchesSearch;
     });
 
-    if (sort === "cheap") result.sort((a, b) => a.price - b.price);
-    if (sort === "expensive") result.sort((a, b) => b.price - a.price);
-    if (sort === "name") result.sort((a, b) => a.name.localeCompare(b.name));
+    if (sort === "cheap")
+      result.sort((a, b) => Number(a.price) - Number(b.price));
+    if (sort === "expensive")
+      result.sort((a, b) => Number(b.price) - Number(a.price));
+    if (sort === "name")
+      result.sort((a, b) =>
+        String(a.name || "").localeCompare(String(b.name || "")),
+      );
 
     return result;
   }, [products, category, search, sort]);
 
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+  const cartCount = cart.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0),
     0,
   );
-
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + Number(item.price || 0) * (Number(item.quantity) || 0),
+    0,
+  );
   const activeCategory =
     categories.find((item) => item.id === category) || categories[0];
 
@@ -277,8 +279,8 @@ function App() {
 
   function openProduct(product) {
     setSelectedProduct(product);
-    setSelectedSize(product.sizes?.[0] || "");
-    setSelectedColor(product.colors?.[0] || "");
+    setSelectedSize(product.sizes?.[0] || "Universal");
+    setSelectedColor(product.colors?.[0] || "Standart");
   }
 
   function addToCart(
@@ -295,7 +297,7 @@ function App() {
       if (found) {
         return current.map((item) =>
           item.id === product.id && item.size === size && item.color === color
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: (Number(item.quantity) || 0) + 1 }
             : item,
         );
       }
@@ -323,7 +325,7 @@ function App() {
           product.id === item.id &&
           product.size === item.size &&
           product.color === item.color
-            ? { ...product, quantity: product.quantity + amount }
+            ? { ...product, quantity: (Number(product.quantity) || 0) + amount }
             : product,
         )
         .filter((product) => product.quantity > 0),
@@ -348,12 +350,10 @@ function App() {
       if (current.some((item) => item.id === product.id)) {
         return current.filter((item) => item.id !== product.id);
       }
-
       if (current.length >= 3) {
         setOrderMessage("Taqqoslash uchun ko‘pi bilan 3 ta mahsulot tanlang.");
         return current;
       }
-
       return [...current, product];
     });
   }
@@ -420,7 +420,6 @@ function App() {
       setOrderMessage("Savatda mahsulot yo‘q.");
       return;
     }
-
     if (
       !customer.name.trim() ||
       !customer.phone.trim() ||
@@ -443,17 +442,14 @@ function App() {
 
     const oldOrders = readStorage("china_orders", []);
     localStorage.setItem("china_orders", JSON.stringify([...oldOrders, order]));
-
     const message = buildOrderText(order);
 
     if (paymentMethod === "telegram") {
       const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(message)}`;
       window.open(telegramUrl, "_blank", "noopener,noreferrer");
-
       setOrderMessage(
         "Telegram ochildi. Xabarni tekshirib, Send tugmasini bosing.",
       );
-
       setShowCheckout(false);
       return;
     }
@@ -477,7 +473,6 @@ function App() {
     setSort("default");
   }
 
-  // /admin manzilida faqat admin panel ko‘rsatiladi
   if (isAdminPage) {
     return (
       <AdminPanel
@@ -517,11 +512,9 @@ function App() {
         <button onClick={() => setShowFavorites(true)}>
           <span>♡</span> Sevimlilar ({favorites.length})
         </button>
-
         <button onClick={() => setShowCompare(true)}>
           <span>⇄</span> Taqqoslash ({compare.length})
         </button>
-
         <button onClick={() => setShowCart(true)}>
           <span>▢</span> Savat ({cartCount})
         </button>
@@ -552,12 +545,10 @@ function App() {
             <br />
             Sifatli tanlov.
           </h1>
-
           <span>
             Erkaklar, ayollar va bolalar uchun tanlangan kiyimlar va
             aksessuarlar.
           </span>
-
           <button
             className="hero-button"
             onClick={() =>
@@ -606,9 +597,13 @@ function App() {
                   <img
                     src={product.image}
                     alt={product.name}
+                    loading="lazy"
                     onClick={() => openProduct(product)}
+                    onError={(event) => {
+                      event.currentTarget.src =
+                        "https://placehold.co/600x800/18352c/d8bd78?text=China+Abdulaziz";
+                    }}
                   />
-
                   <button
                     className={
                       favorites.some((item) => item.id === product.id)
@@ -620,7 +615,6 @@ function App() {
                   >
                     ♡
                   </button>
-
                   <button
                     className="quick-view"
                     onClick={() => openProduct(product)}
@@ -632,14 +626,12 @@ function App() {
                 <div className="product-info">
                   <h3 onClick={() => openProduct(product)}>{product.name}</h3>
                   <p>{product.description}</p>
-
                   <div className="product-bottom">
                     <strong>${Number(product.price).toFixed(2)}</strong>
                     <button onClick={() => addToCart(product)}>
                       + Savatga
                     </button>
                   </div>
-
                   <button
                     className="compare-button"
                     onClick={() => toggleCompare(product)}
@@ -675,13 +667,11 @@ function App() {
           <h2>CHINA ABDULAZIZ</h2>
           <p>Har kun uchun nafis tanlov.</p>
         </div>
-
         <div>
           <h3>Ma’lumot</h3>
           <p>Yetkazib berish: 7 kundan 14 kungacha.</p>
           <p>Mahsulot sifati haqida batafsil ma’lumotni sotuvchidan oling.</p>
         </div>
-
         <div>
           <h3>Aloqa</h3>
           <a
@@ -724,13 +714,15 @@ function App() {
             >
               ×
             </button>
-
             <img
               className="detail-image"
               src={selectedProduct.image}
               alt={selectedProduct.name}
+              onError={(event) => {
+                event.currentTarget.src =
+                  "https://placehold.co/600x800/18352c/d8bd78?text=China+Abdulaziz";
+              }}
             />
-
             <div className="detail-content">
               <p className="eyebrow">CHINA ABDULAZIZ</p>
               <h2>{selectedProduct.name}</h2>
@@ -738,7 +730,6 @@ function App() {
                 ${Number(selectedProduct.price).toFixed(2)}
               </strong>
               <p>{selectedProduct.description}</p>
-
               <h4>O‘lchamni tanlang</h4>
               <div className="option-list">
                 {(selectedProduct.sizes || ["Universal"]).map((size) => (
@@ -753,7 +744,6 @@ function App() {
                   </button>
                 ))}
               </div>
-
               <h4>Rangni tanlang</h4>
               <div className="option-list">
                 {(selectedProduct.colors || ["Standart"]).map((color) => (
@@ -768,9 +758,7 @@ function App() {
                   </button>
                 ))}
               </div>
-
               <p className="delivery-note">Yetkazib berish: 7–14 kun</p>
-
               <button
                 className="primary-button"
                 onClick={() =>
@@ -802,7 +790,6 @@ function App() {
               <>
                 <p className="eyebrow">TAQQOSLASH</p>
                 <h2>Mahsulotlarni taqqoslash</h2>
-
                 {compare.length === 0 ? (
                   <p>Taqqoslash uchun mahsulot tanlang.</p>
                 ) : (
@@ -848,7 +835,6 @@ function App() {
               <>
                 <p className="eyebrow">BUYURTMA</p>
                 <h2>Ma’lumotlaringiz</h2>
-
                 <form className="checkout-form" onSubmit={submitOrder}>
                   <label>Ism familiya</label>
                   <input
@@ -859,7 +845,6 @@ function App() {
                     placeholder="Ismingiz"
                     required
                   />
-
                   <label>Telefon raqami</label>
                   <input
                     type="tel"
@@ -870,7 +855,6 @@ function App() {
                     placeholder="+998 90 123 45 67"
                     required
                   />
-
                   <label>Manzil</label>
                   <textarea
                     value={customer.address}
@@ -880,7 +864,6 @@ function App() {
                     placeholder="Yetkazib berish manzili"
                     required
                   />
-
                   <button
                     type="button"
                     className="location-button"
@@ -893,16 +876,13 @@ function App() {
                         ? "✓ Joylashuv qo‘shildi"
                         : "📍 Joylashuvimni qo‘shish"}
                   </button>
-
                   {location && (
                     <p className="delivery-note">
                       Xarita joylashuvi buyurtmaga qo‘shiladi.
                     </p>
                   )}
-
                   <p className="delivery-note">Yetkazib berish: 7–14 kun.</p>
                   <h4>Buyurtma usulini tanlang</h4>
-
                   <div className="payment-choice">
                     <button
                       type="button"
@@ -925,13 +905,11 @@ function App() {
                       Payme orqali
                     </button>
                   </div>
-
                   <button className="primary-button" type="submit">
                     {paymentMethod === "telegram"
                       ? "Telegramga buyurtma yuborish"
                       : "Payme bo‘limiga o‘tish"}
                   </button>
-
                   {orderMessage && (
                     <p className="order-message">{orderMessage}</p>
                   )}
@@ -941,7 +919,6 @@ function App() {
               <>
                 <p className="eyebrow">SAQLANGANLAR</p>
                 <h2>Sevimli mahsulotlar</h2>
-
                 {favorites.length === 0 ? (
                   <p>Hozircha sevimli mahsulot yo‘q.</p>
                 ) : (
@@ -966,7 +943,6 @@ function App() {
               <>
                 <p className="eyebrow">SIZNING TANLOVINGIZ</p>
                 <h2>Savat ({cartCount})</h2>
-
                 {cart.length === 0 ? (
                   <p>Savatingiz hozircha bo‘sh.</p>
                 ) : (
@@ -983,7 +959,6 @@ function App() {
                           <small>
                             {item.size} · {item.color}
                           </small>
-
                           <div className="quantity-control">
                             <button onClick={() => changeQuantity(item, -1)}>
                               −
@@ -993,26 +968,22 @@ function App() {
                               +
                             </button>
                           </div>
-
                           <button onClick={() => removeFromCart(item)}>
                             O‘chirish
                           </button>
                         </div>
                       </div>
                     ))}
-
                     <div className="cart-total">
                       <span>Jami</span>
                       <strong>${totalPrice.toFixed(2)}</strong>
                     </div>
-
                     <button
                       className="compare-button"
                       onClick={() => setCart([])}
                     >
                       Savatni tozalash
                     </button>
-
                     <button
                       className="primary-button"
                       onClick={() => {
@@ -1038,3 +1009,6 @@ function App() {
 }
 
 export default App;
+
+output_path = Path("/mnt/data/App.jsx");
+output_path.write_text(app_jsx, (encoding = "utf-8"));

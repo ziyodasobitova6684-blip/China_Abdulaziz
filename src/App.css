@@ -1502,3 +1502,95 @@ button {
     font-size: 16px;
   }
 }
+
+.product-image-wrap {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  height: auto;
+  overflow: hidden;
+  background: #252525;
+}
+
+.product-image-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Planshet */
+@media (max-width: 1000px) {
+  .product-image-wrap {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+/* Telefon */
+@media (max-width: 700px) {
+  .product-image-wrap {
+    aspect-ratio: 3 / 4;
+    height: auto;
+  }
+
+  .product-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+/* CHINA_ABDULAZIZ — TELEFON RASMLARI */
+.product-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.product-image-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center;
+}
+
+@media screen and (max-width: 700px) {
+  .product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .product-image-wrap {
+    height: auto !important;
+    aspect-ratio: 3 / 4 !important;
+  }
+
+  .product-image-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+  }
+
+  .product-card {
+    min-width: 0;
+  }
+}
+/* Telefonlarda mahsulot rasmlari */
+@media (max-width: 600px) {
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    display: block;
+  }
+}
