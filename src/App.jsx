@@ -176,7 +176,9 @@ function getCategoryId(value) {
 }
 
 function App() {
-  const isAdminPage = window.location.pathname.replace(/\/+$/, "") === "/admin";
+  const isAdminPage =
+    window.location.pathname.replace(/\/+$/, "") === "/admin" ||
+    window.location.hash === "#/admin";
 
   const [products, setProducts] = useState(() =>
     readStorage("china_products", initialProducts),
@@ -482,7 +484,7 @@ function App() {
         products={products}
         setProducts={setProducts}
         onClose={() => {
-          window.location.href = "/";
+          window.location.href = "/China_Abdulaziz/";
         }}
       />
     );
