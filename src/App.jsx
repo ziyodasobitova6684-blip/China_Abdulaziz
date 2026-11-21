@@ -1009,6 +1009,3 @@ function App() {
 }
 
 export default App;
-
-output_path = Path("/mnt/data/App.jsx");
-output_path.write_text(app_jsx, (encoding = "utf-8"));
