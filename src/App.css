@@ -1594,3 +1594,119 @@ button {
     display: block;
   }
 }
+@media (max-width: 600px) {
+  .product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .product-card,
+  .product-image-wrap {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .product-image-wrap {
+    height: 190px !important;
+    overflow: hidden;
+  }
+
+  .product-image-wrap img {
+    display: block !important;
+    width: 100% !important;
+    height: 190px !important;
+    object-fit: contain !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+/* CHINA ABDULAZIZ - MOBILE IMAGE FIX */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.product-card {
+  min-width: 0;
+}
+
+.product-image-wrap {
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #ded6c9;
+}
+
+.product-image-wrap img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .product-image-wrap {
+    height: auto !important;
+    aspect-ratio: 3 / 4 !important;
+  }
+}
+
+/* CHINA ABDULAZIZ — FINAL MOBILE FIX */
+
+.product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+.product-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.product-image-wrap {
+  position: relative;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 3 / 4 !important;
+  overflow: hidden;
+  background: #252525;
+}
+
+.product-image-wrap img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .product-image-wrap {
+    aspect-ratio: 3 / 4 !important;
+  }
+
+  .product-image-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
